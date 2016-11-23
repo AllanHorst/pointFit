@@ -1,0 +1,58 @@
+html, body{
+	position: relative;
+	height: 100vh;
+	font-family: sans-serif;
+	font-weight: bold;
+}
+
+.spaces {
+	width: 25px;
+	height: 25px;
+	border: 1px solid black;
+	display: -webkit-inline-box;
+	text-align: -webkit-center;
+}
+
+.space-item {
+	font-size: 11px;
+}
+
+.process-color {
+	width: 15px;
+	height: 15px;
+	border: 1px solid black;
+	display: -webkit-inline-box;
+	text-align: -webkit-center;
+}
+
+.wrapper {
+	width: 100vw;
+	display: -webkit-box;
+}
+.console {
+	background-color: rgba(0, 0, 0, 0.8);
+	width: 50%;
+	height: 200px;
+	margin: 0;
+	position: relative;
+}
+
+.data {
+	width: 50%;
+	padding: 10px;
+}
+
+.console-input:focus {
+	outline: none;
+}
+.console-input {
+	width: 100%;
+	background-color: transparent;
+	color: #fff;	
+	/* border: none; */
+	position: absolute;
+	right: -3px;
+	bottom: 0;
+	height: 25px;
+	font-size: 16px;
+}

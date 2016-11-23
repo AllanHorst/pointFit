@@ -2,14 +2,12 @@ angular.module('worstFitApp', [])
 
 .controller('appController',  function($scope) {
 
-	const TOTAL_SPACES = 100;
+	const TOTAL_SPACES = 379;
 
-	var processes = []
+	$scope.processes = []
 
 	$scope.memory = {
 		spaces: [],
-		malloc: malloc,
-		deallocate: deallocate,
 		pointList: [0]
 	}
 
@@ -21,8 +19,8 @@ angular.module('worstFitApp', [])
 		}
 	}
 	initializeMemory()
-	function malloc(process) {
-		if (!isProcessAllocated(process.id)) {
+	$scope.malloc = function(process) {
+		if (getProcessById(process.id) != null) {
 			return 'Process ' + process.id + " already allocated";
 		}
 		// orderList();
@@ -42,6 +40,7 @@ angular.module('worstFitApp', [])
 					continue;
 				}
 				count++;
+				num++;
 				if (count == process.size) {
 					hasSpace = true;
 					keep = false;
@@ -59,11 +58,12 @@ angular.module('worstFitApp', [])
 	function allocate(process, point) {
 		var num = $scope.memory.pointList[point];
 		var count = process.size
-		
+		process.color = getRandomColor();
 		for (var i = num; i < $scope.memory.spaces.length; i++) {
 			var space = $scope.memory.spaces[i]
 			space.status = 'USED';
 			space.processId = process.id;
+			space.color = process.color;
 			count--;
 			if (count == 0) {
 				// Find if after this point is free to be used by other processes
@@ -76,19 +76,24 @@ angular.module('worstFitApp', [])
 			}
 		}
 
-		processes.push(process.id);
+		$scope.processes.push(process);
 	}
 
-	function isProcessAllocated(id) {
-		for (var i = 0; i < processes.length; i++) {
-			if (processes[i] == id) {
-				return false;
+	function getProcessById(id, deleteProcess) {
+		for (var i = 0; i < $scope.processes.length; i++) {
+			if ($scope.processes[i].id == id) {
+				if (deleteProcess) {
+					$scope.processes.splice(i, 1);
+					return null;
+				} else {
+					return $scope.processes[i];
+				}
 			}
 		}
-		return true;
+		return null;
 	}
 
-	function deallocate(processId) {
+	$scope.deallocate = function(processId) {
 		var foundProcess = false;
 		var startedAt;
 		for (var i = 0; i < $scope.memory.spaces.length; i++) {
@@ -106,6 +111,7 @@ angular.module('worstFitApp', [])
 				break;
 			}
 		}
+		getProcessById(processId, true);
 	}
 
 	function createPoint(startedAt, finshedAt) {
@@ -134,11 +140,19 @@ angular.module('worstFitApp', [])
 	}
 
 	// $scope.command = 'memory.malloc({id: 1, size: 15})';
-	$scope.memory.malloc({id: 1, size: 15})
-	$scope.memory.malloc({id: 2, size: 15})
+	$scope.malloc({id: 1, size: 15})
+	$scope.malloc({id: 2, size: 15})
 	$scope.executeCommand = function() {
-		eval("$scope." + $scope.command);
+		aler('so loko')
+		// eval("$scope." + $scope.command);
 	}
 
-
+	function getRandomColor() {
+	    var letters = '0123456789ABCDEF';
+	    var color = '#';
+	    for (var i = 0; i < 6; i++ ) {
+	        color += letters[Math.floor(Math.random() * 16)];
+	    }
+	    return color;
+	}
 })
