@@ -4,6 +4,8 @@ angular.module('worstFitApp', [])
 
 	const TOTAL_SPACES = 100;
 
+	var processes = []
+
 	$scope.memory = {
 		spaces: [],
 		malloc: malloc,
@@ -20,7 +22,11 @@ angular.module('worstFitApp', [])
 	}
 	initializeMemory()
 	function malloc(process) {
-		orderList();
+		if (!isProcessAllocated(process.id)) {
+			return 'Process ' + process.id + " already allocated";
+		}
+		// orderList();
+		$scope.memory.pointList.sort();
 		for (var i = 0; $scope.memory.pointList.length; i++) {
 			var num = $scope.memory.pointList[i]
 
@@ -60,8 +66,7 @@ angular.module('worstFitApp', [])
 			space.processId = process.id;
 			count--;
 			if (count == 0) {
-				// Verifica se a partir deste ponto está livre a 
-				// memória para ser utilizada por outros processos
+				// Find if after this point is free to be used by other processes
 				if ($scope.memory.spaces[i + 1].status == 'FREE') {
 					$scope.memory.pointList[point] = i+1;
 				} else {
@@ -70,15 +75,54 @@ angular.module('worstFitApp', [])
 				break;
 			}
 		}
+
+		processes.push(process.id);
 	}
 
-	function deallocate(process) {
+	function isProcessAllocated(id) {
+		for (var i = 0; i < processes.length; i++) {
+			if (processes[i] == id) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	function deallocate(processId) {
+		var foundProcess = false;
+		var startedAt;
 		for (var i = 0; i < $scope.memory.spaces.length; i++) {
 			var space = $scope.memory.spaces[i];
 
-			if (process.id == space.processId) {
-				
+			if (processId == space.processId) {
+				if (!foundProcess) {
+					startedAt = i;
+					foundProcess = true;
+				}
+				space.processId = undefined;
+				space.status = 'FREE';
+			} else if (processId != space.processId && foundProcess) {
+				createPoint(startedAt, i);
+				break;
 			}
+		}
+	}
+
+	function createPoint(startedAt, finshedAt) {
+		var foundPoint = false;
+		for (var i = 0; i < $scope.memory.pointList.length; i++) {
+			var point = $scope.memory.pointList[i];
+
+			// Find if the point starts after the end of the memory space that was allocated
+			if(point == finshedAt) {
+				$scope.memory.pointList[i] = startedAt;
+				foundPoint = true;
+				break;
+			}
+		}
+
+		if (!foundPoint) {
+			$scope.memory.pointList.push(startedAt);
 		}
 	}
 
@@ -89,8 +133,9 @@ angular.module('worstFitApp', [])
 		Array.min($scope.memory.pointList);
 	}
 
-	$scope.command = 'memory.malloc({id: 1, size: 15})';
-
+	// $scope.command = 'memory.malloc({id: 1, size: 15})';
+	$scope.memory.malloc({id: 1, size: 15})
+	$scope.memory.malloc({id: 2, size: 15})
 	$scope.executeCommand = function() {
 		eval("$scope." + $scope.command);
 	}
