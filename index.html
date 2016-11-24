@@ -17,7 +17,12 @@
 	<br><br>
 	<div class="wrapper">
 		<div class="console">
-			<input class="console-input" type="text" ng-model="command" >
+			<div class="history">
+				<div ng-repeat="h in history track by $index" class="history-item">
+					{{h}}
+				</div>
+			</div>
+			<input class="console-input" type="text" ng-model="command" ng-keypress="inputKeyPress($event)">
 			<!-- <button ng-click="executeCommand()">Enviar</button> -->
 		</div>
 		<div class="data">

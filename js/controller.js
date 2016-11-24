@@ -139,12 +139,68 @@ angular.module('worstFitApp', [])
 		Array.min($scope.memory.pointList);
 	}
 
-	// $scope.command = 'memory.malloc({id: 1, size: 15})';
-	$scope.malloc({id: 1, size: 15})
-	$scope.malloc({id: 2, size: 15})
-	$scope.executeCommand = function() {
-		aler('so loko')
-		// eval("$scope." + $scope.command);
+	$scope.history = [];
+	$scope.executeCommand = function(command) {
+
+		if(command != null) {
+			$scope.command = command;
+		}
+
+		$scope.history.push($scope.command)
+		eval("$scope." + $scope.command);
+		$scope.command = ""
+	}
+
+	$scope.clear = function() {
+		$scope.history = []
+	}
+
+	$scope.clearAll = function() {
+		$scope.processes = []
+
+		$scope.memory = {
+			spaces: [],
+			pointList: [0]
+		}
+		initializeMemory();
+	}
+
+	$scope.inputKeyPress = function(event) {
+		if (event.keyCode == 13) {
+			$scope.executeCommand();
+		}
+	}
+	var listCommandTest = [
+		'malloc({id: 1, size: 79})',
+		'malloc({id: 8, size: 15})',
+		'malloc({id: 9, size: 25})',
+		'malloc({id: 10, size: 18})',
+		'deallocate(9)',
+		'malloc({id: 11, size: 60})',
+		'malloc({id: 12, size: 4})',
+		'malloc({id: 13, size: 19})',
+		'malloc({id: 14, size: 33})',
+		'deallocate(11)',
+		'malloc({id: 15, size: 119})',
+		'malloc({id: 9, size: 25})',
+		'malloc({id: 16, size: 17})',
+	]
+	var num;
+	$scope.test = function() {
+		num = 0;
+		executeTest(num);
+	}
+
+	function executeTest(num) {
+		if (listCommandTest[num] == null) {
+			return;
+		}  
+		setTimeout(function() {
+			$scope.executeCommand(listCommandTest[num]);
+			$scope.$apply();
+			num++;
+			executeTest(num);
+		}, 500);
 	}
 
 	function getRandomColor() {

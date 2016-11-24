@@ -3,6 +3,7 @@ html, body{
 	height: 100vh;
 	font-family: sans-serif;
 	font-weight: bold;
+	/* overflow: hidden; */
 }
 
 .spaces {
@@ -30,11 +31,12 @@ html, body{
 	display: -webkit-box;
 }
 .console {
-	background-color: rgba(0, 0, 0, 0.8);
+	background-color: rgba(0, 0, 0, 0.9);
 	width: 50%;
-	height: 200px;
+	height: 300px;
 	margin: 0;
 	position: relative;
+	font-size: 12px;
 }
 
 .data {
@@ -54,5 +56,14 @@ html, body{
 	right: -3px;
 	bottom: 0;
 	height: 25px;
-	font-size: 16px;
+	font-size: 12px;
+}
+
+.history {
+	max-height: 170px;
+	overflow: auto;
+}
+
+.history-item {
+	color: #fff;
 }
