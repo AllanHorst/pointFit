@@ -18,13 +18,17 @@ angular.module('worstFitApp', [])
 			})
 		}
 	}
+	function sortNumber(a,b) {
+	    return a - b;
+	}
+	
 	initializeMemory()
 	$scope.malloc = function(process) {
 		if (getProcessById(process.id) != null) {
 			return 'Process ' + process.id + " already allocated";
 		}
 		// orderList();
-		$scope.memory.pointList.sort();
+		$scope.memory.pointList.sort(sortNumber);
 		for (var i = 0; $scope.memory.pointList.length; i++) {
 			var num = $scope.memory.pointList[i]
 
